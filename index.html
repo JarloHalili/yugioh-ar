@@ -49,8 +49,8 @@
           src="#m1"
           position="0 0.1 0"
           scale="0.6 0.6 0.6"
-          rotation="90 180 0"
-          animation-mixer="loop: repeat; crossFadeDuration: 0.3"
+          rotation="90 0 90"
+          animation-mixer="clip: Take 001; loop: repeat; crossFadeDuration: 0.3"
           visible="false"
         ></a-gltf-model>
       </a-entity>
@@ -67,14 +67,10 @@
         target0.addEventListener('targetFound', () => {
           monster1.setAttribute('visible', true);
           statusEl.textContent = '🐉 Monster on field!';
-
-          // Log available animations for debugging
+          // Force animation to restart on detection
           setTimeout(() => {
-            const mesh = monster1.getObject3D('mesh');
-            if (mesh) {
-              console.log('Animations found:', mesh.animations.map(a => a.name));
-            }
-          }, 1000);
+            monster1.setAttribute('animation-mixer', 'clip: Take 001; loop: repeat; crossFadeDuration: 0.3');
+          }, 300);
         });
 
         target0.addEventListener('targetLost', () => {
