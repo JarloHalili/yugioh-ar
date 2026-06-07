@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Yu-Gi-Oh! AR</title>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <style>
+      #status {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 14px;
+        font-family: sans-serif;
+        background: rgba(0,0,0,0.6);
+        padding: 8px 16px;
+        border-radius: 20px;
+        z-index: 999;
+        text-align: center;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="status">📷 Point camera at your Yu-Gi-Oh card</div>
+
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;"
+      color-space="sRGB"
+      renderer="colorManagement: true"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-assets>
+        <a-asset-item id="m1" src="./models/monster1.glb"></a-asset-item>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <!-- Card → Monster -->
+      <a-entity mindar-image-target="targetIndex: 0" id="target0">
+        <a-gltf-model
+          id="monster1"
+          src="#m1"
+          position="0 0.1 0"
+          scale="0.15 0.15 0.15"
+          rotation="-90 0 0"
+          animation-mixer="clip: Take 001; loop: repeat; crossFadeDuration: 0.3"
+          visible="false"
+        ></a-gltf-model>
+      </a-entity>
+
+    </a-scene>
+
+    <script>
+      const statusEl = document.getElementById('status');
+
+      document.querySelector('a-scene').addEventListener('loaded', () => {
+        const target0 = document.getElementById('target0');
+        const monster1 = document.getElementById('monster1');
+
+        target0.addEventListener('targetFound', () => {
+          monster1.setAttribute('visible', true);
+          statusEl.textContent = '🐉 Monster on field!';
+        });
+
+        target0.addEventListener('targetLost', () => {
+          monster1.setAttribute('visible', false);
+          statusEl.textContent = '📷 Point camera at your Yu-Gi-Oh card';
+        });
+      });
+    </script>
+  </body>
+</html>
